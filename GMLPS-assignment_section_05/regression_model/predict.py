@@ -1,6 +1,5 @@
-import typing as t
+from typing import Union
 
-import numpy as np
 import pandas as pd
 
 from regression_model import __version__ as _version
@@ -9,12 +8,12 @@ from regression_model.processing.data_manager import load_pipeline
 from regression_model.processing.validation import validate_inputs
 
 pipeline_file_name = f"{config.app_config.pipeline_save_file}{_version}.pkl"
-_price_pipe = load_pipeline(file_name=pipeline_file_name)
+_survival_pipe = load_pipeline(file_name=pipeline_file_name)
 
 
 def make_prediction(
     *,
-    input_data: t.Union[pd.DataFrame, dict],
+    input_data: Union[pd.DataFrame, dict],
 ) -> dict:
     """Make a prediction using a saved model pipeline."""
 
@@ -23,11 +22,11 @@ def make_prediction(
     results = {"predictions": None, "version": _version, "errors": errors}
 
     if not errors:
-        predictions = _price_pipe.predict(
+        predictions = _survival_pipe.predict(
             X=validated_data[config.model_config.features]
         )
         results = {
-            "predictions": [np.exp(pred) for pred in predictions],  # type: ignore
+            "predictions": [pred for pred in predictions],
             "version": _version,
             "errors": errors,
         }
