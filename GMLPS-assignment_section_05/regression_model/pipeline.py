@@ -19,13 +19,15 @@ survival_pipe = Pipeline(
             "missing_imputation",
             CategoricalImputer(
                 imputation_method="missing",
-                variables=config.model_config.categorical_vars,
-            ),
+                variables=config.model_config.categorical_vars
+            )
         ),
         # add missing indicator
         (
             "missing_indicator",
-            AddMissingIndicator(variables=config.model_config.numerical_vars),
+            AddMissingIndicator(
+                variables=config.model_config.numerical_vars
+            )
         ),
         # impute numerical variables with the mean
         (
@@ -37,24 +39,39 @@ survival_pipe = Pipeline(
         ),
         (
             "extract_letter",
-            pp.ExtractLetterTransformer(variables=config.model_config.cabin_vars),
+            pp.ExtractLetterTransformer(
+                variables=config.model_config.cabin_vars
+            )
         ),
         # == CATEGORICAL ENCODING
         (
             "rare_label_encoder",
             RareLabelEncoder(
-                tol=0.05, n_categories=1, variables=config.model_config.categorical_vars
-            ),
+                tol=0.05,
+                n_categories=1,
+                variables=config.model_config.categorical_vars
+            )
         ),
         (
             # encode categorical variables using one hot encoding into k-1 variables
             "categorical_encoder",
             OneHotEncoder(
-                drop_last=True, variables=config.model_config.categorical_vars
-            ),
+                drop_last=True,
+                variables=config.model_config.categorical_vars
+            )
         ),
         # scale
-        ("scaler", StandardScaler()),
-        ("Logit", LogisticRegression(C=0.0005, random_state=0)),
+        (
+            "scaler",
+            StandardScaler()
+        ),
+
+        (
+            "Logit",
+            LogisticRegression(
+                C=0.0005,
+                random_state=0
+            )
+        ),
     ]
 )
